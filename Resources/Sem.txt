@@ -1,0 +1,51 @@
+Semaphores
+
+Structures
+struct semid_ds {
+  struct ipc_perm sem_perm;
+  time_t sem_otime; - last operations
+  time_t sem_ctime; - last update
+  unsigned short sem_nsems; - number of semaphores
+};
+
+union semun {
+  int val;                /* value for SETVAL */
+  struct semid_ds *buf;   /* buffer for IPC_STAT & IPC_SET */
+  ushort *array;          /* array for GETALL & SETALL */
+};
+
+struct sembuf {
+  unsigned short sem_num; - index of the semaphore
+  short sem_op; - операция
+  short sem_flg; - флагове
+};
+
+Flags
+IPC_STAT
+PC_SET
+IPC_RMID 
+SETVAL
+GETVAL
+SETALL
+GETALL
+
+Functions
+int semget(key_t key, int nsems, int semflg) - get semaphores
+int semop(int semid, struct * sops, unsigned nsops) - execute operations
+int semctl(int semid. int semnum, int cmd, union semun arg) - control semaphores
+
+Examples
+The following snippet returns the value of the passed semaphore. The final argument (the union) is ignored when the GETVAL command is used:
+int get_sem_val( int sid, int semnum )
+{
+  return(semctl(sid, semnum, GETVAL, 0));
+}
+
+Consider the following function, which could be used to initialize a new semaphore value:
+void init_semaphore( int sid, int semnum, int initval)
+{
+        union semun semopts;    
+
+        semopts.val = initval;
+        semctl( sid, semnum, SETVAL, semopts);
+}

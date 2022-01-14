@@ -1,0 +1,44 @@
+IPC object
+ipc := { msg | shm | sem } - queue | memory | semaphore
+
+Libraries
+#include <sys/types.h>
+#include <sys/ipc.h>
+#include <sys/ipc.h>
+
+Structures
+struct ipc_perm {
+  uid_t uid; - owner
+  gid_t gid; - owner's group
+  uid_t cuid; - creater
+  gid_t cgid; - creater's group
+  mode_t mode; - permissions
+};
+
+IPC object structure
+struct ipcid_ds {
+  struct ipc_perm ipc_perm;
+};
+
+Flag/Cmd
+IPC_PRIVATE
+IPC_CREAT
+IPC_EXCL
+IPC_STAT - get an IPC object info
+IPC_SET - set an IPC object permissions
+IPC_RMID - delete an IPC object
+
+Functions
+Create/Open an IPC object
+int ipcget(key_t key, int ipcflg)
+
+int msgget(key_t key, int msgflg)
+int shmget(key_t key, size_t size, int shmflg)
+int semget(key_t key, int nsems, int semflg)
+
+Control IPC object
+int ipcctl(int ipcid, int cmd, struct ipcid_ds *buf)
+
+int msgctl(int msqid, int cmd, struct msqid_ds *buf)
+int shmctl(int shmid, int cmd, struct shmid_ds *buf)
+int semctl(int semid, int semnum, int cmd, union semun arg)

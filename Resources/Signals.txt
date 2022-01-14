@@ -1,0 +1,41 @@
+Libraries
+#include <sys/types.h>
+#include <signal.h>
+#include <unistd.h>
+
+Structures
+struct sigaction {
+  void     (*sa_handler)(int); - hadler fucntion
+  void     (*sa_sigaction)(int, siginfo_t *, void *); - action
+  sigset_t   sa_mask; - 
+  int        sa_flags; - flags (SA_SIGINFO)
+  void     (*sa_restorer)(void);
+}
+
+FLags
+SIG_IGN - ignore
+SIG_DFL - default
+
+Signals
+SIGHUP 1 Term
+SIGINT 2 Term
+SIGQUIT 3 Core
+SIGILL 4 Core
+SIGABRT 6 Core
+SIGFPE 8 Core
+SIGKILL 9 Term
+SIGSEGV 11 Core
+SIGPIPE 13 Term 
+SIGALRM 14 Term
+SIGTERM 15 Term
+SIGUSR1 10 Term
+SIGUSR2 12 Term
+SIGCHLD 17 Ign
+SIGCONT 18 Cont
+SIGSTOP 19 Stop
+
+Functions
+int sigaction(int signum, const struct sigaction *act, struct sigaction *oldact) - set/receive signal action
+unsigned int alarm(unsigned int seconds) - send SIGALRM after given seconds
+int pause(void) - wait signal
+int kill(pid_t pid, int sig) - send signal

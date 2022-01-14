@@ -1,0 +1,17 @@
+Shared Memory
+
+Libraries
+#include <sys/types.h>
+#include <sys/shm.h>
+
+Flags/Cmd
+SHM_RND
+SHM_RDONLY
+IPC_STAT
+IPC_SET
+IPC_RMID
+
+Functions
+void *shmat(int shmid, const void *shmaddr, int shmflg) - add/attach shared memory segment
+int shmctl(int shmid, int cmd, struct shmid_ds *buf) - control share mempory
+int shmdt(const void *shmaddr) - remove/detach hared memory segment
