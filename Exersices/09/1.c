@@ -17,9 +17,9 @@ struct msgbuf { // must be declared
 int main(int argc, char const *argv[]) {
     int id = msgget((key_t)IPC_PRIVATE, IPC_CREAT | 0644);
 
-    if(id == -1) {
+    if(id < 0) {
         perror("Error creating msg");
-        return 1;
+        return 0;
     }
 
     struct msgbuf buf;
@@ -27,7 +27,7 @@ int main(int argc, char const *argv[]) {
 
     sprintf(buf.mtext, "Some message");
 
-    if(msgsnd(id, &buf, 1024, 0) < 0) {
+    if(msgsnd(id, &buf, 1024, 0) == -1) {
         perror("Error sending message!");
         return 1;
     }

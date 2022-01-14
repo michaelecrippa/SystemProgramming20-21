@@ -20,17 +20,17 @@ struct msgbuf {
 int main(int argc, char const *argv[]) {
     int id = msgget((key_t)IPC_PRIVATE, IPC_CREAT | 0644);
 
-    if(id < 0) {
+    if(id == -1) {
         perror("create");
-        return 0;
+        return 1;
     }
 
     int fork_res = fork();
 
-    if(fork_res < 0) {
+    if(fork_res == -1) {
         perror("Fork");
-        return 0;
-    } else if( fork_res == 0) { //child
+        return 1;
+    } else if(fork_res == 0) { //child
         if(argc < 2) {
             perror("Missing args!");
             return 0;
@@ -39,9 +39,9 @@ int main(int argc, char const *argv[]) {
         char * fileName = argv[1];
         int fid = open(fileName, O_RDONLY);
 
-        if(fid < 0) {
+        if(fid == -1) {
             perror("File missing");
-            return 0;
+            return 1;
         }
         struct msgbuf buf;
         buf.mtype = 1;
@@ -54,24 +54,24 @@ int main(int argc, char const *argv[]) {
             buf.mtext[counter] = buff[0];
         }
 
-        if(msgsnd(id, &buf,buf.mtext, 0) < 0) {
+        if(msgsnd(id, &buf,buf.mtext, 0) == -1) {
             perror("Send fail");
-            return 0;
+            return 1;
         }       
     } else { //parent
         struct msgbuf buf;
         buf.mtype = 1;
         buf.mtext[0] = '\0';
         sleep(5);
-        if(msgrcv(id, &buf, 1024, buf.mtype, 0) < 0) {
+        if(msgrcv(id, &buf, 1024, buf.mtype, 0) == -1) {
             perror("Rcv");
-            return 0;
+            return 1;
         }
 
         printf("%s\n", buf.mtext);
-        if(msgctl(id, IPC_RMID, NULL) < 0) {
+        if(msgctl(id, IPC_RMID, NULL) == -1) {
             perror("close");
-            return 0;
+            return 1;
         }
     }
 
