@@ -4,4 +4,4 @@ todo
  - Remove bugs
  - Add missing exersices
   
-Please use at your own rik. 
+**Please use at your own risk.** 
