@@ -17,9 +17,9 @@ struct msgbuf { // must be declared
 int main(int argc, char const *argv[]) {
     int id = msgget((key_t)IPC_PRIVATE, IPC_CREAT | 0644);
 
-    if(id < 0) {
+    if(id == -1) {
         perror("Error creating msg");
-        return 0;
+        return 1;
     }
 
     struct msgbuf buf;
@@ -29,20 +29,20 @@ int main(int argc, char const *argv[]) {
 
     if(msgsnd(id, &buf, 1024, 0) < 0) {
         perror("Error sending message!");
-        return 0;
+        return 1;
     }
     buf.mtext[0]= '\0';  
 
-    if(msgrcv(id, &buf, 1024, 1, 0) < 0) {
+    if(msgrcv(id, &buf, 1024, 1, 0) == -1) {
         perror("Error receiving message!");
-        return 0;
+        return 1;
     }
 
     printf("%s", buf.mtext);
 
-    if(msgctl(id, IPC_RMID, NULL) < 0) {
+    if(msgctl(id, IPC_RMID, NULL) == -1) {
         perror("Error closing the queue!");
-        return 0;
+        return 1;
     } 
 
     return 0;
