@@ -13,27 +13,27 @@ struct msgbuf {
     long mtype;
     char mtext[16];
 };
+
 //Да се напише програма на C, която създава опашка и поражда процес. 
 //Единия процес чете съдържанието на файл, чието име е подадено като параметър в командния ред и го праща в опашката. 
 //Другия процес получава съобщения от опашката и ги извежда на стандартния изход.
-
 int main(int argc, char const *argv[]) {
     int id = msgget((key_t)IPC_PRIVATE, IPC_CREAT | 0644);
 
     if(id == -1) {
-        perror("create");
+        perror("ipc_crea");
         return 1;
     }
 
     int fork_res = fork();
 
-    if(fork_res == -1) {
+    if(fork_res < 0) {
         perror("Fork");
         return 1;
     } else if(fork_res == 0) { //child
         if(argc < 2) {
             perror("Missing args!");
-            return 0;
+            return 1;
         }
 
         char * fileName = argv[1];
@@ -43,6 +43,7 @@ int main(int argc, char const *argv[]) {
             perror("File missing");
             return 1;
         }
+
         struct msgbuf buf;
         buf.mtype = 1;
 
@@ -55,7 +56,7 @@ int main(int argc, char const *argv[]) {
         }
 
         if(msgsnd(id, &buf,buf.mtext, 0) == -1) {
-            perror("Send fail");
+            perror("Send");
             return 1;
         }       
     } else { //parent

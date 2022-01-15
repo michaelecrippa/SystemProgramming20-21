@@ -19,25 +19,25 @@ int main(int argc, char const *argv[]) {
 
     if(id == -1) {
         perror("create shm");
-        return 0;
+        return 1;
     }
 
     char* shm_ptr = (char*)shmat(id, NULL, 0);
     if((int)shm_ptr == -1) {
         perror("attach");
-        return 0;
+        return 1;
     }
 
     printf("%s\n", shm_ptr);
 
     if(shmdt(shm_ptr) == -1) {
         perror("shmdt");
-        return 0;
+        return 1;
     }
 
     if(shmctl(id, IPC_RMID, NULL) == -1) {
         perror("rmid");
-        return 0;
+        return 1;
     }
 
     return 0;

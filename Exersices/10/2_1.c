@@ -23,7 +23,7 @@ int main(int argc, char const *argv[]) {
     char* shm_ptr = (char*)shmat(id, NULL, 0);
     if((int)shm_ptr == -1) {
         perror("attach");
-        return 0;
+        return 1;
     }
 
     char buff [100] = "Message";
@@ -32,7 +32,7 @@ int main(int argc, char const *argv[]) {
 
     if(shmdt(shm_ptr) == -1 ) {
         perror("dt");
-        return 0;
+        return 1;
     }
 
     return 0;

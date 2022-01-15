@@ -9,7 +9,7 @@
 
 //Да се напише програма на C, която създава опашка, изпраща съобщение в нея, 
 //след това го прочита и го извежда на стандартния изход.
-struct msgbuf { // must be declared
+struct msgbuf { // must be delared
     long mtype;
     char mtext[1024];
 };
@@ -17,31 +17,32 @@ struct msgbuf { // must be declared
 int main(int argc, char const *argv[]) {
     int id = msgget((key_t)IPC_PRIVATE, IPC_CREAT | 0644);
 
-    if(id < 0) {
-        perror("Error creating msg");
-        return 0;
+    if(id == -1) {
+        perror("ipc_creat");
+        return 1;
     }
 
     struct msgbuf buf;
     buf.mtype = 1;
 
-    sprintf(buf.mtext, "Some message");
+    strcpy(buf.mtext, "Some message");
 
-    if(msgsnd(id, &buf, 1024, 0) == -1) {
-        perror("Error sending message!");
+    if(msgsnd(id, &buf, 1024, 1) == -1) {
+        perror("send");
         return 1;
     }
-    buf.mtext[0]= '\0';  
+    
+    strcpy(buf.mtext, "Change message");
 
-    if(msgrcv(id, &buf, 1024, 1, 0) == -1) {
-        perror("Error receiving message!");
+    if(msgrcv(id, &buf, 1024, 1, 0) < 0) {
+        perror("receive");
         return 1;
     }
 
-    printf("%s", buf.mtext);
+    printf("%s\n", buf.mtext);
 
     if(msgctl(id, IPC_RMID, NULL) == -1) {
-        perror("Error closing the queue!");
+        perror("RMID");
         return 1;
     } 
 
